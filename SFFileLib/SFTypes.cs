@@ -127,8 +127,29 @@ namespace SFFileLib
 
         [JsonPropertyName("assetManifest")]
         public List<DBAsset> AssetManifest { get; set; }
+    }
 
-        [JsonPropertyName("migrationMetadata")]
-        public MigrationMetadata MigrationMetadata { get; set; }
+    public class RecordVersion
+    {
+        [JsonPropertyName("globalVersion")]
+        public int GlobalVersion { get; set; }
+
+        [JsonPropertyName("localVersion")]
+        public int LocalVersion { get; set; }
+
+        [JsonPropertyName("lastModifyingUserId")]
+        public string LastModifyingUserId { get; set; }
+
+        [JsonPropertyName("lastModifyingMachineId")]
+        public string LastModifyingMachineId { get; set; }
+    }
+
+    public class DBAsset
+    {
+        [JsonPropertyName("hash")]
+        public string Hash { get; set; }
+
+        [JsonPropertyName("bytes")]
+        public long Bytes { get; set; }
     }
 }

@@ -9,20 +9,47 @@ namespace SFFileLib
 {
     public static class SFFileHandler
     {
+
+        public static HttpClient _httpClient = new()
+        {
+            BaseAddress = new Uri("https://api.resonite.com")
+        };
+
         //List Directory
-        public static List<Record> ListDirectory(AccountInfo accountInfo, string id, string path)
+        public static async Task<List<Record>> ListDirectory(AccountInfo accountInfo, string id, string path)
         {
             //Check if logged in
             if (accountInfo.UserID == null)
             {
                 throw new Exception("Not logged in");
             }
+
+            _httpClient.DefaultRequestHeaders.Authorization = new(accountInfo.FullToken!);
+            return await _httpClient.GetFromJsonAsync<List<Record>>($"{getIdType(id)}/{id}/records/{Uri.EscapeDataString(path)}");
+            
         }
         //Download File
         //Upload File
         //Move File
         //Edit File Properties
+        //Delete File
 
+
+        private static string getIdType(string id)
+        {
+            if (id.StartsWith('U'))
+            {
+                return "users";
+            }
+            else if (id.StartsWith('G'))
+            {
+                return "groups";
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 
     public class AccountInfo
@@ -108,6 +135,8 @@ namespace SFFileLib
             Random random = new();
             return Convert.ToHexString(SHA256.HashData(RandomNumberGenerator.GetBytes(16)));
         }
+
+
     }
 
     
