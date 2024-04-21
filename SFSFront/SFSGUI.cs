@@ -17,6 +17,7 @@ namespace SFSFront
         private async void SFSGUI_Load(object sender, EventArgs e)
         {
             string path = "C:\\Users\\thing\\ResSync";
+            //This is just test code, doesn't actually work rn though lol
             resSyncRootInfo = new StorageProviderSyncRootInfo
             {
                 Id = "Resonite!S-1-5-32-545!U-Lexevo",

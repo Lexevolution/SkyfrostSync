@@ -16,7 +16,7 @@ namespace SFFileLib
         };
 
         //List Directory
-        public static async Task<List<Record>> ListDirectory(AccountInfo accountInfo, string id, string path)
+        public static async Task<List<Record>> ListDirectory(AccountInfo accountInfo, string inventoryId, string path)
         {
             //Check if logged in
             if (accountInfo.UserID == null)
@@ -25,11 +25,34 @@ namespace SFFileLib
             }
 
             _httpClient.DefaultRequestHeaders.Authorization = new(accountInfo.FullToken!);
-            return await _httpClient.GetFromJsonAsync<List<Record>>($"{getIdType(id)}/{id}/records/{Uri.EscapeDataString(path)}");
+            var dirList = await _httpClient.GetFromJsonAsync<List<Record>>($"{getIdType(inventoryId)}/{inventoryId}/records?path={Uri.EscapeDataString(path)}");
+            if (dirList == null)
+            {
+                throw new Exception("Directory List result is null.");
+            }
+            return dirList!;
             
         }
         //Download File
+        public static async Task DownloadFile(AccountInfo accountInfo, Record record)
+        {
+
+        }
         //Upload File
+        public static async Task UploadFile(AccountInfo accountInfo, string inventoryId, string pathFrom, string pathTo)
+        {
+            //Create Record object
+            Record record = new()
+            {
+                RecordId = $"R-{Guid.NewGuid()}",
+                RecordType = "object",
+                OwnerId = inventoryId,
+                Path = pathTo,
+                AssetManifest = 
+            };
+            //Preprocess Record (Produces AssetDiff which contains assets I need to upload)
+            //Upload Assets
+        }
         //Move File
         //Edit File Properties
         //Delete File
