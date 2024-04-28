@@ -41,6 +41,19 @@ namespace SFFileLib
         //Upload File
         public static async Task UploadFile(AccountInfo accountInfo, string inventoryId, string pathFrom, string pathTo)
         {
+            //Resonite's upload flow:
+            // - Start: SkyFrost.Base.RecordUploadTaskBase`1.RunUploadInternal
+            // - SkyFrost.Base.RecordUploadTaskBase`1.CheckCloudVersion (Mainly used in worlds, likely don't need to worry about this, and can set both Local and Global version to 0)
+            // - FrooxEngine.EngineRecordUploadTask.PrepareRecord
+            // -- FrooxEngine.EngineRecordUploadTask.BuildManifest (Struggling to figure out what this does, I think it's just a string list of all the asset uris in the datatree?)
+            // -- FrooxEngine.EngineRecordUploadTask.CollectAssets (if a local asset, just adds to a list?) (Where TF does it generate the hash?!)
+            // 
+            //
+            if (accountInfo.UserID == null)
+            {
+                throw new Exception("Not logged in");
+            }
+
             //Create Record object
             Record record = new()
             {
@@ -48,7 +61,11 @@ namespace SFFileLib
                 RecordType = "object",
                 OwnerId = inventoryId,
                 Path = pathTo,
-                AssetManifest = 
+                AssetManifest = new List<DBAsset>(),
+                CreationTime = DateTime.Now,
+                LastModificationTime = DateTime.Now,
+                Version = new RecordVersion{ GlobalVersion = 0, LocalVersion = 0},
+                
             };
             //Preprocess Record (Produces AssetDiff which contains assets I need to upload)
             //Upload Assets
