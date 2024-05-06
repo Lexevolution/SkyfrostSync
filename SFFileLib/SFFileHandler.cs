@@ -46,9 +46,11 @@ namespace SFFileLib
             // - SkyFrost.Base.RecordUploadTaskBase`1.CheckCloudVersion (Mainly used in worlds, likely don't need to worry about this, and can set both Local and Global version to 0)
             // - FrooxEngine.EngineRecordUploadTask.PrepareRecord
             // -- FrooxEngine.EngineRecordUploadTask.BuildManifest (Struggling to figure out what this does, I think it's just a string list of all the asset uris in the datatree?)
-            // -- FrooxEngine.EngineRecordUploadTask.CollectAssets (if a local asset, just adds to a list?) (Where TF does it generate the hash?!)
-            // 
-            //
+            // -- FrooxEngine.EngineRecordUploadTask.CollectAssets (Generates cloud db url and adds to AssetManifest)
+            // --- FrooxEngine.Store.LocalDB.TryFetchAssetRecordWithMetadataAsync
+            // ---- SkyFrost.Base.AssetUtil.GenerateHashSignature (Here it is!!! SHA256 hash of the file, that's it.) (It saves this and where the local file is stored in an "AssetUploadData" object list. It gets used eventually, but I'm missing some steps.)
+            // - SkyFrost.Base.RecordUploadTaskBase`1.RemoveManifestDuplicates
+            // - FrooxEngine.EngineRecordUploadTask.PreprocessRecord
             if (accountInfo.UserID == null)
             {
                 throw new Exception("Not logged in");
