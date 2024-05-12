@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using ImageMagick;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -51,6 +52,9 @@ namespace SFFileLib
             // ---- SkyFrost.Base.AssetUtil.GenerateHashSignature (Here it is!!! SHA256 hash of the file, that's it.) (It saves this and where the local file is stored in an "AssetUploadData" object list. It gets used eventually, but I'm missing some steps.)
             // - SkyFrost.Base.RecordUploadTaskBase`1.RemoveManifestDuplicates
             // - FrooxEngine.EngineRecordUploadTask.PreprocessRecord
+
+
+
             if (accountInfo.UserID == null)
             {
                 throw new Exception("Not logged in");
@@ -66,9 +70,29 @@ namespace SFFileLib
                 AssetManifest = new List<DBAsset>(),
                 CreationTime = DateTime.Now,
                 LastModificationTime = DateTime.Now,
-                Version = new RecordVersion{ GlobalVersion = 0, LocalVersion = 0},
-                
+                Version = new RecordVersion{ GlobalVersion = 0, LocalVersion = 1 }          
             };
+
+            //Prepare asset(s)
+            MagickNET.Initialize();
+            var image = new MagickImage(MagickColors.Transparent, 512, 512);
+            var iconSettings = new MagickReadSettings { Width = 448, Height = 448 };
+            var icon = new MagickImage("E:\\Downloads\\draft_24dp_FILL1_wght300_GRAD0_opsz20.svg", iconSettings);
+            var textSettings = new MagickReadSettings { 
+                Font = "@E:\\Downloads\\Poppins-Medium.ttf",
+                TextGravity = Gravity.Center,
+                FillColor = MagickColors.White,
+                StrokeColor = MagickColors.Black,
+                Width = 496,
+                Height = 64,
+                FontPointsize = 8
+            };
+
+            var iconText = new MagickImage($"caption: {Path.GetFileName(pathFrom)}", textSettings);
+
+            image.Composite(icon, Gravity.North);
+            image.Composite(iconText, Gravity.South);
+            image.Write("E:\\Downloads\\filevisual.webp");
             //Preprocess Record (Produces AssetDiff which contains assets I need to upload)
             //Upload Assets
         }
@@ -134,7 +158,7 @@ namespace SFFileLib
                 loginDetails.UserID = response!.Details.UserId;
                 loginDetails.Token = response!.Details.SessionToken;
                 loginDetails.FullToken = string.Format("res {0}:{1}", loginDetails.UserID, loginDetails.Token);
-                _httpClient.DefaultRequestHeaders.Authorization = new(loginDetails.FullToken);
+                _httpClient.DefaultRequestHeaders.Add("Authorization", loginDetails.FullToken);
             }
             return loginDetails;
         }

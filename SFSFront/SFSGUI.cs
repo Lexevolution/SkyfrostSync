@@ -46,6 +46,12 @@ namespace SFSFront
         {
             AccountInfo account = new AccountInfo(UsernameTextbox.Text, PasswordTextbox.Text);
             AccountInfo loggedin = await AccountInfo.GetGroups(await AccountInfo.Login(account));
+            bindingSource1.Add(loggedin);
+        }
+
+        private async void GenPicture_Click(object sender, EventArgs e)
+        {
+            await SFFileHandler.UploadFile((AccountInfo)bindingSource1.Current, "U-Lexevo", "E:\\Downloads\\MiEx_helper.py", "");
         }
     }
 }

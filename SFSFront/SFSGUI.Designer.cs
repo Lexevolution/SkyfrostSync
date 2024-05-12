@@ -28,12 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             registerButton = new Button();
             unregisterButton = new Button();
             PasswordTextbox = new TextBox();
             UsernameTextbox = new TextBox();
             LoginButton = new Button();
+            bindingSource1 = new BindingSource(components);
+            GenPicture = new Button();
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
             SuspendLayout();
             // 
             // registerButton
@@ -81,11 +85,27 @@
             LoginButton.UseVisualStyleBackColor = true;
             LoginButton.Click += LoginButton_Click;
             // 
+            // bindingSource1
+            // 
+            bindingSource1.AllowNew = true;
+            bindingSource1.DataSource = typeof(SFFileLib.AccountInfo);
+            // 
+            // GenPicture
+            // 
+            GenPicture.Location = new Point(244, 272);
+            GenPicture.Name = "GenPicture";
+            GenPicture.Size = new Size(75, 23);
+            GenPicture.TabIndex = 4;
+            GenPicture.Text = "Picture :)";
+            GenPicture.UseVisualStyleBackColor = true;
+            GenPicture.Click += GenPicture_Click;
+            // 
             // SFSGUI
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(GenPicture);
             Controls.Add(LoginButton);
             Controls.Add(UsernameTextbox);
             Controls.Add(PasswordTextbox);
@@ -94,6 +114,7 @@
             Name = "SFSGUI";
             Text = "SkyfrostSync";
             Load += SFSGUI_Load;
+            ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -106,5 +127,7 @@
         private TextBox PasswordTextbox;
         private TextBox UsernameTextbox;
         private Button LoginButton;
+        public BindingSource bindingSource1;
+        private Button GenPicture;
     }
 }
